@@ -47,7 +47,22 @@ body{background:linear-gradient(180deg,var(--ivory),#fff);color:#3b2b2b;overflow
 .hash{font-weight:700;color:var(--muted)}
 .addcal{padding:8px 12px;background:#fff;border:1px solid #e5d6c5;border-radius:10px;cursor:pointer}
 /* Responsive */
-@media(max-width:720px){.slides{padding:18px}.right{width:100%}.deck{padding:16px}}
+@media(max-width:720px){
+  .slides{
+    padding:18px;
+    padding-top: calc(60px + env(safe-area-inset-top, 20px)); /* top padding for mobile/notch */
+  }
+  .deck{
+    padding:16px;
+    margin-top:0;
+  }
+  .right{
+    width:100%;
+  }
+  .row{
+    gap:16px;
+  }
+}
 /* simple animations */
 @keyframes ride{0%{transform:translateX(-20vw)}100%{transform:translateX(120vw)}}
 .baraat.move{animation:ride 4.5s linear forwards}
@@ -58,24 +73,6 @@ body{background:linear-gradient(180deg,var(--ivory),#fff);color:#3b2b2b;overflow
 .hidden{display:none}
 /* small interactive styles */
 .next-hint{margin-top:8px;font-size:13px;color:#7a5b4a}
-
-@media(max-width:720px){
-  .slides{
-    padding: 18px;
-    padding-top: 40px; /* Add more top padding */
-  }
-  .deck{
-    padding: 16px;
-    margin-top: 20px; /* extra spacing if needed */
-  }
-  .right{
-    width:100%;
-  }
-  .row{
-    gap:16px;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -105,9 +102,7 @@ body{background:linear-gradient(180deg,var(--ivory),#fff);color:#3b2b2b;overflow
     <div class="deck">
       <div class="row">
         <div class="left">
-          <div class="event-card" id="slideContent">
-            <!-- dynamic content inserted here -->
-          </div>
+          <div class="event-card" id="slideContent"></div>
           <div class="controls">
             <button class="icon-btn" id="prevBtn">◀ Prev</button>
             <button class="icon-btn" id="nextBtn">Next ▶</button>
@@ -141,7 +136,6 @@ body{background:linear-gradient(180deg,var(--ivory),#fff);color:#3b2b2b;overflow
     </div>
   </div>
 
-  <!-- audio (user triggers) -->
   <audio id="bgAudio" loop preload="auto">
     <source src="./bandbaaja.mp3" type="audio/mp3">
   </audio>
@@ -150,46 +144,11 @@ body{background:linear-gradient(180deg,var(--ivory),#fff);color:#3b2b2b;overflow
 <script>
 // --- Data for events ---
 const EVENTS = [
-  {
-    id:'welcome',
-    title:'Welcome to #SamuKiSimmu',
-    subtitle:'Sanyam ❤️ Simran',
-    body:'You are cordially invited to celebrate our wedding. Enjoy the events below. Click Next or sit back and watch the story unfold.',
-    map: 'https://www.google.com/maps/search/Celebrations+Inn+Resort+Fazilka',
-    when: '',
-  },
-  {
-    id:'haldi',
-    title:'Haldi Ceremony',
-    subtitle:'Haldi — 5th December 2025, 3:00 PM',
-    body:'Join us for the Haldi ceremony at Aggarwal Dharamshala, Fazilka. Pink clothes encouraged & lots of fun!',
-    map: 'https://www.google.com/maps/search/Aggarwal+Dharamshala+Fazilka',
-    when: '2025-12-05T15:00:00'
-  },
-  {
-    id:'sangeet',
-    title:'Sangeet Night',
-    subtitle:'5th December 2025, 8:00 PM onwards',
-    body:'Dance, music and celebration — Sangeet at Aggarwal Dharamshala. Get your moves ready!',
-    map: 'https://www.google.com/maps/search/Aggarwal+Dharamshala+Fazilka',
-    when: '2025-12-05T20:00:00'
-  },
-  {
-    id:'wedding',
-    title:'Wedding Night',
-    subtitle:'6th December 2025, 8:00 PM onwards',
-    body:'Witness the union of Sanyam and Simran at Celebrations Inn Resort, Fazilka. Reception to follow.',
-    map: 'https://www.google.com/maps/search/Celebrations+Inn+Resort+Fazilka',
-    when: '2025-12-06T20:00:00'
-  },
-  {
-    id:'thanks',
-    title:'See You There!',
-    subtitle:'#SamuKiSimmu',
-    body:'Thank you for being part of our story. Can\'t wait to celebrate together!',
-    map: 'https://www.google.com/maps/search/Fazilka',
-    when: ''
-  }
+  {id:'welcome',title:'Welcome to #SamuKiSimmu',subtitle:'Sanyam ❤️ Simran',body:'You are cordially invited to celebrate our wedding. Enjoy the events below. Click Next or sit back and watch the story unfold.',map: 'https://www.google.com/maps/search/Celebrations+Inn+Resort+Fazilka',when: ''},
+  {id:'haldi',title:'Haldi Ceremony',subtitle:'Haldi — 5th December 2025, 3:00 PM',body:'Join us for the Haldi ceremony at Aggarwal Dharamshala, Fazilka. Pink clothes encouraged & lots of fun!',map: 'https://www.google.com/maps/search/Aggarwal+Dharamshala+Fazilka',when: '2025-12-05T15:00:00'},
+  {id:'sangeet',title:'Sangeet Night',subtitle:'5th December 2025, 8:00 PM onwards',body:'Dance, music and celebration — Sangeet at Aggarwal Dharamshala. Get your moves ready!',map: 'https://www.google.com/maps/search/Aggarwal+Dharamshala+Fazilka',when: '2025-12-05T20:00:00'},
+  {id:'wedding',title:'Wedding Night',subtitle:'6th December 2025, 8:00 PM onwards',body:'Witness the union of Sanyam and Simran at Celebrations Inn Resort, Fazilka. Reception to follow.',map: 'https://www.google.com/maps/search/Celebrations+Inn+Resort+Fazilka',when: '2025-12-06T20:00:00'},
+  {id:'thanks',title:'See You There!',subtitle:'#SamuKiSimmu',body:'Thank you for being part of our story. Can\'t wait to celebrate together!',map: 'https://www.google.com/maps/search/Fazilka',when: ''}
 ];
 
 // --- Elements ---
@@ -228,7 +187,7 @@ function createConfetti(){
 createConfetti();
 
 // intro interactions
-horse.addEventListener('click', ()=>{ // extra confetti
+horse.addEventListener('click', ()=>{
   createConfetti();
   confetti.style.opacity=1;
   setTimeout(()=>confetti.style.opacity=0,1200);
@@ -237,10 +196,14 @@ horse.addEventListener('click', ()=>{ // extra confetti
 enterBtn.addEventListener('click', startShow);
 
 function startShow(){
-  // start baraat animation then show slides
   baraat.classList.add('move');
   createConfetti();
-  setTimeout(()=>{ intro.classList.add('hidden'); slides.classList.remove('hidden'); initSlides(); playAudioOnUser(); },4500);
+  setTimeout(()=>{
+    intro.classList.add('hidden');
+    slides.classList.remove('hidden');
+    initSlides();
+    // Audio handled by enableMusicAutoStart()
+  },4500);
 }
 
 // keyboard controls
@@ -291,17 +254,16 @@ playPause.addEventListener('click', ()=>{ if(autoTimer) stopAuto(); else startAu
 function initSlides(){ render(0); startAuto(); }
 
 // audio controls
-function playAudioOnUser(){ try{ bgAudio.currentTime=0; bgAudio.play().catch(()=>{}); musicToggle.textContent='🔊 Music'; }catch(e){}
-}
 musicToggle.addEventListener('click', ()=>{
-  if(bgAudio.paused){ bgAudio.play(); musicToggle.textContent='🔊 Music'; } else { bgAudio.pause(); musicToggle.textContent='🔈 Music'; }
+  if(bgAudio.paused){ bgAudio.play(); musicToggle.textContent='🔊 Music'; } 
+  else { bgAudio.pause(); musicToggle.textContent='🔈 Music'; }
 });
 
 // ICS generation
 function createICS(event){
   if(!event.when) return null;
   const dtStart = new Date(event.when);
-  const dtEnd = new Date(dtStart.getTime()+2*60*60*1000); // +2 hours
+  const dtEnd = new Date(dtStart.getTime()+2*60*60*1000);
   function fmt(d){ return d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z'; }
   const ics = [
     'BEGIN:VCALENDAR',
@@ -329,16 +291,20 @@ function downloadICS(i){
   const a = document.createElement('a'); a.href=url; a.download = EVENTS[i].id+'.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 
-// Download all
 downloadAll.addEventListener('click', ()=>{
-  // create one zip-like single ics per event by prompting downloads sequentially
   EVENTS.forEach((e,ii)=>{ if(e.when){ setTimeout(()=>downloadICS(ii), ii*300); }});
 });
 
 // small swipe support for mobile
 let startX=null;
 window.addEventListener('touchstart', (e)=>{ if(slides.classList.contains('hidden')) return; startX=e.touches[0].clientX; });
-window.addEventListener('touchend', (e)=>{ if(startX===null) return; const endX=e.changedTouches[0].clientX; if(endX-startX>40) { pauseAuto(); prev(); } else if(startX-endX>40) { pauseAuto(); next(); } startX=null; });
+window.addEventListener('touchend', (e)=>{ 
+  if(startX===null) return; 
+  const endX=e.changedTouches[0].clientX; 
+  if(endX-startX>40) { pauseAuto(); prev(); } 
+  else if(startX-endX>40) { pauseAuto(); next(); } 
+  startX=null; 
+});
 
 // expose downloadICS to inline onclick
 window.downloadICS = downloadICS;
@@ -349,11 +315,10 @@ window.addEventListener('keyup', (e)=>{ if(e.key==='Enter' && !intro.classList.c
 // small accessibility: focus enter button
 enterBtn.focus();
 
-// Final note: create a tiny inline audio sample if you want to swap with real file.
-// The <audio> src contains a placeholder base64 stub — replace with real audio by setting bgAudio.src
+// --- Audio autoplay only once ---
 function enableMusicAutoStart() {
   const handler = () => {
-    bgAudio.play().catch(()=>{});
+    if(bgAudio.paused){ bgAudio.currentTime=0; bgAudio.play().catch(()=>{}); }
     intro.removeEventListener('click', handler);
     document.removeEventListener('click', handler);
     document.removeEventListener('touchstart', handler);
